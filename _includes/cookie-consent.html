@@ -1,0 +1,53 @@
+
+{% if jekyll.environment == "production" %}
+<style>
+  #cookie-notice{position:fixed;z-index:9999;left:0;right:0;bottom:0;display:flex;gap:.75rem;align-items:center;justify-content:center;flex-wrap:wrap;padding:.85rem 1rem;background:#111;color:#fff;font-size:.95rem;line-height:1.35}
+  #cookie-notice a{color:#fff;text-decoration:underline}
+  #cookie-notice .btn{border:0;border-radius:.5rem;padding:.45rem .85rem;cursor:pointer}
+  #cookie-notice .btn-approve{background:#0ea5e9;color:#fff}
+  #cookie-notice .btn-more{background:transparent;border:1px solid #fff;color:#fff}
+</style>
+
+<div id="cookie-notice" role="region" aria-label="Cookie notice">
+  <span>
+    {{ site.data.ui-text[site.locale].terms_privacy_info | default: 'This site uses cookies and third-party scripts only after your consent.' }}
+  </span>
+  <button id="cookie-notice-accept" class="btn btn-approve" type="button">
+    {{ site.data.ui-text[site.locale].terms_privacy_accept | default: 'Accept' }}
+  </button>
+  <a class="btn btn-more" href="{{ '/terms_privacy/' | relative_url }}">
+    {{ site.data.ui-text[site.locale].terms_privacy_ref | default: 'More Info' }}
+  </a>
+</div>
+
+<script>
+(function(){
+  // Helpers
+  function setConsentCookie(){
+    var secure = (location.protocol === 'https:') ? '; Secure' : '';
+    document.cookie = 'cookie-notice-dismissed=true; Max-Age=2592000; Path=/; SameSite=Lax' + secure; // 30 days
+  }
+  function hasConsent(){
+    return document.cookie.indexOf('cookie-notice-dismissed=true') > -1;
+  }
+  function hideBanner(){
+    var el = document.getElementById('cookie-notice');
+    if(el) el.style.display = 'none';
+  }
+
+  // If already consented, hide immediately
+  if (hasConsent()) hideBanner();
+
+  // Wire the accept button
+  var btn = document.getElementById('cookie-notice-accept');
+  if (btn){
+    btn.addEventListener('click', function(){
+      setConsentCookie();
+      hideBanner();
+      // Notify the page so scripts can start loading
+      document.dispatchEvent(new CustomEvent('cookie:accepted'));
+    });
+  }
+})();
+</script>
+{% endif %}

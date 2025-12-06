@@ -1,0 +1,18 @@
+<div class="page__footer-copyright">
+  <a href="{{ '/terms_privacy/' | relative_url }}">{{ site.data.ui-text[site.locale].terms_privacy_title | default: "Terms & Privacy" }}</a> |
+  <a href="#" id="cookie-reset">{{ site.data.ui-text[site.locale].terms_privacy_reset | default: "Cookie Settings" }}</a> |
+</div>
+
+<script>
+(function(){
+  var link = document.getElementById('cookie-reset');
+  if(!link) return;
+  link.addEventListener('click', function(e){
+    e.preventDefault();
+    document.cookie = 'cookie-notice-dismissed=; Max-Age=0; Path=/';
+    var banner = document.getElementById('cookie-notice');
+    if (banner){ banner.style.display = ''; }
+    else { location.reload(); }
+  });
+})();
+</script>
